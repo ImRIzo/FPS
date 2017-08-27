@@ -2,18 +2,48 @@
 
 public class Enemy : MonoBehaviour {
 
-    public float health = 50.0f;
-
-    public void TakeDamage(float amount)
+    public int health = 50;
+    public int RespawnDelay = 2;
+    int _currentHealth;
+    int currentHealth
     {
-        health -= amount;
-        if(health <= 0f)
+        get
         {
-            Die();
+            return _currentHealth;
+        }
+        set
+        {
+            _currentHealth = value;
+
+            if(_currentHealth <= 0)
+            {
+                Die();
+            }
         }
     }
+    //public void TakeDamage(float amount)
+    //{
+    //    health -= amount;
+    //    if(health <= 0f)
+    //    {
+    //        Die();
+    //    }
+    //}
     void Die()
     {
-        Destroy(gameObject);
+        var respawner = new GameObject("Respawner for" + gameObject.name).AddComponent<Respawner>();
+
+        respawner.target = gameObject;
+        respawner.delay = RespawnDelay;
+        currentHealth = health;
+    }
+
+    void Start()
+    {
+        currentHealth = health;
+    }
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
     }
 }
